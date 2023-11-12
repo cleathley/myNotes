@@ -1,8 +1,9 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import axios from 'axios';
 import React, {ReactElement, useEffect, useState} from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import {Keyboard, StyleSheet, View} from 'react-native';
+import {Keyboard, ScrollView, StyleSheet, View} from 'react-native';
 import {Button, HelperText, TextInput} from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown';
 import {
@@ -71,126 +72,174 @@ export default function NoteScreen(): ReactElement {
     navigation.popToTop();
   };
 
+  // populate the note with some random data
+  async function onTest() {
+    setValue(
+      'client',
+      clientList[randomNumberInRange(0, clientList.length)].value,
+    );
+    setValue(
+      'category',
+      categoryList[randomNumberInRange(0, categoryList.length)].value,
+    );
+
+    const rnd = '&r=' + Math.random();
+    axios
+      .get(
+        'https://asdfast.beobit.net/api/?type=word&length=' +
+          randomNumberInRange(3, 6) +
+          rnd,
+      )
+      .then(response => {
+        setValue('title', response.data.text);
+      });
+
+    axios
+      .get('https://asdfast.beobit.net/api/?length=1' + rnd)
+      .then(response => {
+        setValue('body', response.data.text);
+      });
+  }
+
+  function randomNumberInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
   return (
     <View style={styles.container}>
-      <View style={{paddingTop: 8}} />
+      <ScrollView>
+        <View style={{paddingTop: 8}} />
 
-      <View style={styles.textInput}>
-        <Controller
-          name="client"
-          control={control}
-          rules={{
-            required: 'Please select the client.',
-          }}
-          render={({field: {value}}) => (
-            <DropDown
-              label={'Client'}
-              mode={'outlined'}
-              visible={showClientDropDown}
-              showDropDown={() => setShowClientDropDown(true)}
-              onDismiss={() => setShowClientDropDown(false)}
-              value={value}
-              setValue={_value => setValue('client', _value)}
-              list={clientList}
-            />
+        <View style={styles.textInput}>
+          <Controller
+            name="client"
+            control={control}
+            rules={{
+              required: 'Please select the client.',
+            }}
+            render={({field: {value}}) => (
+              <DropDown
+                label={'Client'}
+                mode={'outlined'}
+                visible={showClientDropDown}
+                showDropDown={() => setShowClientDropDown(true)}
+                onDismiss={() => setShowClientDropDown(false)}
+                value={value}
+                setValue={_value => setValue('client', _value)}
+                list={clientList}
+              />
+            )}
+          />
+          {errors.client && (
+            <HelperText type="error">{errors.client.message}</HelperText>
           )}
-        />
-        {errors.client && (
-          <HelperText type="error">{errors.client.message}</HelperText>
-        )}
-      </View>
+        </View>
 
-      <View style={styles.textInput}>
-        <Controller
-          name="category"
-          control={control}
-          rules={{
-            required: 'Please select the client.',
-          }}
-          render={({field: {value}}) => (
-            <DropDown
-              label={'Category'}
-              mode={'outlined'}
-              visible={showCategoryDropDown}
-              showDropDown={() => setShowCategoryDropDown(true)}
-              onDismiss={() => setShowCategoryDropDown(false)}
-              value={value}
-              setValue={_value => setValue('category', _value)}
-              list={categoryList}
-            />
+        <View style={styles.textInput}>
+          <Controller
+            name="category"
+            control={control}
+            rules={{
+              required: 'Please select the client.',
+            }}
+            render={({field: {value}}) => (
+              <DropDown
+                label={'Category'}
+                mode={'outlined'}
+                visible={showCategoryDropDown}
+                showDropDown={() => setShowCategoryDropDown(true)}
+                onDismiss={() => setShowCategoryDropDown(false)}
+                value={value}
+                setValue={_value => setValue('category', _value)}
+                list={categoryList}
+              />
+            )}
+          />
+          {errors.category && (
+            <HelperText type="error" style={styles.textInputErrorComboBox}>
+              {errors.category.message}
+            </HelperText>
           )}
-        />
-        {errors.category && (
-          <HelperText type="error" style={styles.textInputErrorComboBox}>
-            {errors.category.message}
-          </HelperText>
-        )}
-      </View>
+        </View>
 
-      <>
-        <Controller
-          name="title"
-          control={control}
-          rules={{
-            required: 'Please enter in the note title.',
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInput
-              label="Title"
-              mode="outlined"
-              onChangeText={onChange}
-              onBlur={onBlur}
-              value={value}
-              maxLength={60}
-              autoCapitalize="none"
-              error={errors.title as unknown as boolean}
-              style={styles.textInput}
-            />
+        <>
+          <Controller
+            name="title"
+            control={control}
+            rules={{
+              required: 'Please enter in the note title.',
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                label="Title"
+                mode="outlined"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                maxLength={60}
+                autoCapitalize="none"
+                error={errors.title as unknown as boolean}
+                style={styles.textInput}
+              />
+            )}
+          />
+          {errors.title && (
+            <HelperText type="error" style={styles.textInputError}>
+              {errors.title.message}
+            </HelperText>
           )}
-        />
-        {errors.title && (
-          <HelperText type="error" style={styles.textInputError}>
-            {errors.title.message}
-          </HelperText>
-        )}
-      </>
+        </>
 
-      <>
-        <Controller
-          name="body"
-          control={control}
-          rules={{
-            required: 'Please enter in the note text.',
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInput
-              label="Body"
-              mode="outlined"
-              onChangeText={onChange}
-              onBlur={onBlur}
-              value={value}
-              multiline={true}
-              numberOfLines={6}
-              maxLength={60}
-              autoCapitalize="none"
-              error={errors.body as unknown as boolean}
-              style={styles.textInput}
-            />
+        <>
+          <Controller
+            name="body"
+            control={control}
+            rules={{
+              required: 'Please enter in the note text.',
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                label="Body"
+                mode="outlined"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                value={value}
+                multiline={true}
+                numberOfLines={6}
+                autoCapitalize="none"
+                error={errors.body as unknown as boolean}
+                style={styles.textInput}
+              />
+            )}
+          />
+          {errors.body && (
+            <HelperText type="error" style={styles.textInputError}>
+              {errors.body.message}
+            </HelperText>
           )}
-        />
-        {errors.body && (
-          <HelperText type="error" style={styles.textInputError}>
-            {errors.body.message}
-          </HelperText>
-        )}
-      </>
+        </>
 
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleSubmit(onSubmit, Keyboard.dismiss)}>
-        Save Note
-      </Button>
+        <View style={styles.row}>
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={handleSubmit(onSubmit, Keyboard.dismiss)}>
+            Save Note
+          </Button>
+        </View>
+
+        <View style={[styles.row, {justifyContent: 'flex-end'}]}>
+          <Button
+            icon="bug-check"
+            mode="elevated"
+            style={{
+              width: '50%',
+            }}
+            onPress={onTest}>
+            Random data
+          </Button>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -219,5 +268,7 @@ const styles = StyleSheet.create({
   textInputErrorComboBox: {
     width: '90%',
   },
-  button: {},
+  button: {
+    width: '100%',
+  },
 });

@@ -8,6 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import merge from 'deepmerge';
 import React, {ReactElement} from 'react';
 import {StatusBar, useColorScheme} from 'react-native';
+import axios from 'axios';
 import {
   MD3DarkTheme as MaterialDarkTheme,
   MD3LightTheme as MaterialLightTheme,
@@ -44,6 +45,11 @@ function App(): ReactElement {
   let currentTheme = isThemeDark
     ? availableThemes.combinedDarkTheme
     : availableThemes.combinedLightTheme;
+
+  // set the defaults for axios (as we are working with json)
+  axios.defaults.headers.common.Accept = 'application/json';
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
+  axios.defaults.timeout = 5000;
 
   return (
     <PaperProvider theme={currentTheme}>
