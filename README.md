@@ -9,6 +9,14 @@ The following major libraries where used for Navigation/UX;
 - [React Native Paper](https://reactnativepaper.com/)
 - [React Hook Form](https://www.react-hook-form.com/)
 
+## Screenshots
+
+![No Notes](README/ios1.png)
+![Note Editor](README/ios2.png)
+![Validation Error](README/ios3.png)
+![Completed Form](README/ios4.png)
+![Note Listing with Note](README/ios5.png)
+
 ## Environment
 
 ### React Native
