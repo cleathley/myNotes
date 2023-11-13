@@ -130,7 +130,12 @@ export default function NoteScreen(): ReactElement {
                 inputProps={{
                   onChange: onChange,
                   onBlur: onBlur,
-                  error: errors.body as unknown as boolean,
+                  right: (
+                    <TextInput.Icon
+                      icon={showClientDropDown ? 'menu-up' : 'menu-down'}
+                    />
+                  ),
+                  error: errors.client as unknown as boolean,
                 }}
               />
             )}
@@ -160,7 +165,12 @@ export default function NoteScreen(): ReactElement {
                 inputProps={{
                   onChange: onChange,
                   onBlur: onBlur,
-                  error: errors.body as unknown as boolean,
+                  right: (
+                    <TextInput.Icon
+                      icon={showCategoryDropDown ? 'menu-up' : 'menu-down'}
+                    />
+                  ),
+                  error: errors.category as unknown as boolean,
                 }}
               />
             )}
