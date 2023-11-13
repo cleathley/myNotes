@@ -26,6 +26,7 @@ const useNote = () => {
 // Create the noteReducer to handle the dispatch methods from the app
 //
 const noteReducer = (state: NoteState, action: NoteAction): NoteState => {
+  console.log(action.type, action.payload);
   switch (action.type) {
     // restore the state
     case 'RESTORE_STATE':
