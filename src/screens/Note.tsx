@@ -117,7 +117,7 @@ export default function NoteScreen(): ReactElement {
             rules={{
               required: 'Please select the client.',
             }}
-            render={({field: {value}}) => (
+            render={({field: {onChange, onBlur, value}}) => (
               <DropDown
                 label={'Client'}
                 mode={'outlined'}
@@ -127,6 +127,11 @@ export default function NoteScreen(): ReactElement {
                 value={value}
                 setValue={_value => setValue('client', _value)}
                 list={clientList}
+                inputProps={{
+                  onChange: onChange,
+                  onBlur: onBlur,
+                  error: errors.body as unknown as boolean,
+                }}
               />
             )}
           />
@@ -140,9 +145,9 @@ export default function NoteScreen(): ReactElement {
             name="category"
             control={control}
             rules={{
-              required: 'Please select the client.',
+              required: 'Please select a category.',
             }}
-            render={({field: {value}}) => (
+            render={({field: {onChange, onBlur, value}}) => (
               <DropDown
                 label={'Category'}
                 mode={'outlined'}
@@ -152,6 +157,11 @@ export default function NoteScreen(): ReactElement {
                 value={value}
                 setValue={_value => setValue('category', _value)}
                 list={categoryList}
+                inputProps={{
+                  onChange: onChange,
+                  onBlur: onBlur,
+                  error: errors.body as unknown as boolean,
+                }}
               />
             )}
           />
@@ -167,7 +177,7 @@ export default function NoteScreen(): ReactElement {
             name="title"
             control={control}
             rules={{
-              required: 'Please enter in the note title.',
+              required: 'Please enter a title for the note.',
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
